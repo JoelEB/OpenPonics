@@ -1,0 +1,16 @@
+/*
+OpenPonics Welcome.html CSS file
+Joel Bartlett
+12/01/2013
+*/
+p{
+    font-family: Garamond, serif;
+    font-size: 24px;
+    background-color: #00FF00;
+}
+h1{
+    color: #00FFAA;
+}
+ol{
+    font-family: cursive;
+}
