@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- EXTERNAL LIBS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+
+    <!-- EXAMPLE SCRIPT -->
+    <script>
+
+      // onload callback
+      function drawChart() {
+
+        // JSONP request
+        var jsonData = $.ajax({
+          url: 'https://data.sparkfun.com/output/QGGzAN7d34unM2EKD51d?gt[timestamp]=now-1%20month&timezone=America/Denver.json',
+          dataType: 'jsonp',
+        }).done(function (results) {
+
+          var data = new google.visualization.DataTable();
+
+          data.addColumn('datetime', 'Time');
+          data.addColumn('number', 'H2O Temp');
+          data.addColumn('number', 'Room Temp');
+
+          $.each(results, function (i, row) {
+            data.addRow([
+            (new Date(row.timestamp)),
+              parseFloat(row.H2O_temp),
+              parseFloat(row.room_temp)
+            ]);
+          });
+
+          var chart = new google.visualization.LineChart($('#chart').get(0));
+
+          chart.draw(data, {
+            title: 'Solid State Stats'
+          });
+
+        });
+
+      }
+
+      // load chart lib
+      google.load('visualization', '1', {
+        packages: ['corechart']
+      });
+
+      // call drawChart once google charts is loaded
+      google.setOnLoadCallback(drawChart);
+
+    </script>
+
+  </head>
+  <body>
+    <div id="chart" style="width: 100%;"></div>
+  </body>
+</html>

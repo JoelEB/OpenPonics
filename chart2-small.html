@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- EXTERNAL LIBS-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://www.google.com/jsapi"></script>
+
+    <!-- EXAMPLE SCRIPT -->
+    <script type="text/javascript">
+    
+      // onload callback
+      function drawChart() {
+
+        var url = 'https://data.sparkfun.com/output/QGGzAN7d34unM2EKD51d?gt[timestamp]=now-' + $('input[name=timeframe]:checked', '#timeframes').val() + '&timezone=America/Denver';
+
+        // JSONP request
+        var jsonData = $.ajax({
+          // url: 'https://data.sparkfun.com/output/' + public_key + '.json',
+          url: url,
+          data: {page: 1},
+          dataType: 'json',
+        }).done(function (results) {
+
+          var data = new google.visualization.DataTable();
+
+          data.addColumn('datetime', 'Time');
+          data.addColumn('number', 'H2O Temp');
+          data.addColumn('number', 'Room Temp');
+
+          $.each(results, function (i, row) {
+            data.addRow([
+              (new Date(row.timestamp)),
+              parseFloat(row.H2O_temp),
+              parseFloat(row.room_temp)
+            ]);
+          });
+
+          var chart = new google.visualization.LineChart($('#chart').get(0));
+          var options = {
+            width:320, height: 200,
+            title: 'Solid State Stats'
+          };
+
+          chart.draw(data, options);
+
+        });
+
+      }
+
+      // load chart lib
+      google.load('visualization', '1', {
+        packages: ['corechart']
+      });
+
+      // call drawChart once google charts is loaded
+      google.setOnLoadCallback(drawChart);
+
+
+
+    </script>
+
+  </head>
+  <body>
+    <form action="#" id="timeframes">
+      <input type="radio" name="timeframe" value="1 day" onClick="drawChart()" checked>1 Day<br/>
+      <input type="radio" name="timeframe" value="1 week" onClick="drawChart()">1 Week <br/>
+      <input type="radio" name="timeframe" value="1 month" onClick="drawChart()">1 Month
+    </form>
+    <div id="chart" style="width: 100%;"></div>
+  </body>
+</html>
+    <div id="chart" style="width: 100%;"></div>
